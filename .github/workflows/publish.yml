@@ -1,0 +1,56 @@
+name: Publish micro PWA
+
+on:
+  workflow_dispatch:      # fired by auditable's release (gh workflow run) + manual
+  push:
+    branches: [main]      # redeploy on any change here (shell, or a refreshed micro.html)
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+
+      # Prefer the latest auditable RELEASE asset (keeps the deploy in lockstep
+      # with releases). Best-effort: if there's no release with micro.html yet,
+      # publish.mjs falls back to the committed micro.html seed.
+      - name: Fetch latest auditable release (micro.html)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p dl
+          gh release download --repo gentropic/auditable --pattern 'micro.html' --dir dl || \
+            echo "no micro.html in a release yet — using the committed seed"
+
+      - name: Assemble the PWA
+        run: |
+          node publish.mjs ./dl
+          mkdir -p _site
+          # Serve: the app (index.html) + PWA assets (manifest/sw/icons) + the
+          # downloadable single file (rolling micro.html).
+          cp index.html manifest.webmanifest sw.js \
+             icon.svg icon-192.png icon-512.png \
+             icon-maskable.svg icon-192-maskable.png icon-512-maskable.png \
+             micro.html .nojekyll _site/
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - id: deploy
+        uses: actions/deploy-pages@v4
