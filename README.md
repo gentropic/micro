@@ -42,6 +42,32 @@ all, no telemetry, no runtime code generation, no WASM. It reads the files you
 open and writes the PNGs you export, nothing else. Capability artifacts are
 emitted and verified at build by [@gcu/seal](https://gentropic.org/security).
 
+## References
+
+micro contains no third-party code — the engine is GCU's own, implemented
+from the published methods:
+
+- M. Schütz, G. Mandlburger, J. Otepka, M. Wimmer.
+  *Progressive Real-Time Rendering of One Billion Points Without Hierarchical
+  Acceleration Structures.* Computer Graphics Forum 39(2), 51–64, 2020.
+  [doi:10.1111/cgf.13911](https://doi.org/10.1111/cgf.13911) — the streaming,
+  no-preprocess, progressive-accumulation rendering model at micro's core.
+- M. Schütz, B. Kerbl, M. Wimmer. *Rendering Point Clouds with Compute Shaders
+  and Vertex Order Optimization.* Computer Graphics Forum 40(4), 2021.
+  [doi:10.1111/cgf.14345](https://doi.org/10.1111/cgf.14345) — the
+  vertex-order/Morton line behind micro's batch chunking.
+- M. Schütz, B. Kerbl, M. Wimmer. *Software Rasterization of 2 Billion Points
+  in Real Time.* Proc. ACM Comput. Graph. Interact. Tech. 5(3), art. 24, 2022.
+  [doi:10.1145/3543863](https://doi.org/10.1145/3543863)
+- C. Boucheny. *Visualisation scientifique de grands volumes de données: pour
+  une approche perceptive.* PhD thesis, Université Joseph Fourier, 2009; and
+  A. Ribes, C. Boucheny. *Eye-Dome Lighting: a non-photorealistic shading
+  technique.* Kitware Source 7, 2011 — the EDL shading that makes points read
+  as a surface.
+- C. Sigg, T. Weyrich, M. Botsch, M. Gross. *GPU-Based Ray-Casting of
+  Quadratic Surfaces.* Eurographics Symposium on Point-Based Graphics, 59–65,
+  2006 — the ray-cast impostor technique behind the exact block rendering.
+
 ## This repo
 
 The release surface for micro. The app is built in the
