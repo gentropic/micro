@@ -42,11 +42,12 @@ jobs:
           node publish.mjs ./dl
           mkdir -p _site
           # Serve: the app (index.html) + PWA assets (manifest/sw/icons) + the
-          # downloadable single file (rolling micro.html).
+          # downloadable single file (rolling micro.html) + the docs page.
           cp index.html manifest.webmanifest sw.js \
              icon.svg icon-192.png icon-512.png \
              icon-maskable.svg icon-192-maskable.png icon-512-maskable.png \
              micro.html .nojekyll _site/
+          cp -r docs _site/
 
       - uses: actions/upload-pages-artifact@v3
         with:
