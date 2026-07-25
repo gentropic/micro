@@ -35,6 +35,21 @@ self-contained file to keep, share, or run offline.
 However large the file, the browser keeps only a windowed slice of it in
 memory; the GPU owns the rest. A 50-million-element model stays interactive.
 
+## Scope
+
+micro is a **viewer and QA bench**. It shows your data and checks it — read
+anything, see the truth, filter, section, pick and measure, join, reconcile,
+validate against drillholes, and convert between formats. The job is to let you
+look honestly.
+
+It is **not an estimation or geological-modelling suite, and that is
+deliberate.** micro does not interpolate grades, build implicit models, classify
+resources, or generate reports — the last mile a resource statement is actually
+built from. It stops at *see and check*.
+
+The line is a promise, not a limitation: micro stays the honest lens anyone can
+use freely, kept small enough to keep its promises.
+
 ## Security posture
 
 `micro.html` is **Sealed**: CSP `connect-src 'none'` — no network reach at
