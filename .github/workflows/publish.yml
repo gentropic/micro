@@ -64,9 +64,13 @@ jobs:
           done
           [ -f _site/docs/micro-manual.pdf ] || echo "::warning::no auditable release carries micro-manual.pdf — the docs page's download link will 404"
 
-      - uses: actions/upload-pages-artifact@v3
+      # v5 (2026-11-25): v3's artifact stopped being found by deploy-pages — three fresh runs in a
+      # row failed "No artifacts named github-pages" after a successful upload. v4+ leaves hidden
+      # files out unless asked, so .nojekyll is asked for (an artifact deploy runs no Jekyll anyway).
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: _site
+          include-hidden-files: true
 
       - id: deploy
         uses: actions/deploy-pages@v4
