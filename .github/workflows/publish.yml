@@ -15,11 +15,12 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  publish:
+  # BUILD uploads the site; DEPLOY (its own job) publishes it. One job doing both asked for the
+  # artifact ~0.3 s after uploading it and, from 2026-11-25, often found none ("No artifacts named
+  # github-pages") — the two-job shape is GitHub's documented pattern and gives the artifact time
+  # to be listed.
+  build:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
@@ -72,5 +73,12 @@ jobs:
           path: _site
           include-hidden-files: true
 
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
       - id: deploy
         uses: actions/deploy-pages@v4
