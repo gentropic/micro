@@ -49,6 +49,21 @@ jobs:
              micro.html .nojekyll _site/
           cp -r docs _site/
 
+      # The manual (the LuaLaTeX book, ~13 MB) is built on Arthur's machine and attached
+      # to an auditable release by hand (CI has no TeX and no GPU for its screenshots), so
+      # it rides in from the newest release that carries one and is never committed here:
+      # 13 MB per rebuild would pile up in this repo's history.
+      - name: Fetch the micro manual (PDF)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for tag in $(gh release list --repo gentropic/auditable --limit 20 --json tagName -q '.[].tagName'); do
+            if gh release download "$tag" --repo gentropic/auditable --pattern 'micro-manual.pdf' --dir _site/docs --clobber 2>/dev/null; then
+              echo "micro-manual.pdf from $tag"; break
+            fi
+          done
+          [ -f _site/docs/micro-manual.pdf ] || echo "::warning::no auditable release carries micro-manual.pdf — the docs page's download link will 404"
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
